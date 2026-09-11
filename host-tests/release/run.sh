@@ -53,8 +53,14 @@ done
 # reformatting the workflow does not turn a passing check into a failing one,
 # and reordering the arguments does not turn a failing one into a pass. One
 # merge-bin per board; each must place all three parts.
-for board in x4pro sticky; do
-  merge="$(tr '\n' ' ' < "$WF" | grep -o "merge-bin[^;]*gh_release_$board/firmware\.bin" || true)"
+#
+# Board and build directory are named separately because they stopped being the
+# same string: papermono's env is upstream's `papermono-gh_release`, not
+# `gh_release_papermono`. A loop that derives one from the other would not fail
+# on a missing merge-bin for it, it would never look.
+for pair in "x4pro:gh_release_x4pro" "sticky:gh_release_sticky" "papermono:papermono-gh_release"; do
+  board="${pair%%:*}"; dir="${pair##*:}"
+  merge="$(tr '\n' ' ' < "$WF" | grep -o "merge-bin[^;]*$dir/firmware\.bin" || true)"
   if [ -z "$merge" ]; then
     bad "the release workflow never calls esptool merge-bin for $board"
   else
@@ -91,14 +97,21 @@ elif grep -qE "dist/$legacy( |\"|$)" "$WF"; then
 else
   bad "the release does not publish '$legacy', so every fielded X4 Pro's Check for updates finds nothing"
 fi
-sticky_name="$(grep -A1 'FREEINK_DEVICE_STICKY$' "$TAGH" | grep -oE 'CROSSPOINT_BOARD_NAME "[^"]+"' | sed 's/.*"\(.*\)"/\1/')"
-if [ -z "$sticky_name" ]; then
-  bad "cannot find the sticky board name in FirmwareBoardTag.h"
-elif grep -qE "dist/firmware-$sticky_name\.bin( |\"|$)" "$WF"; then
-  ok
-else
-  bad "the release does not publish 'firmware-$sticky_name.bin', so a Sticky's Check for updates finds nothing"
-fi
+# Every board but the x4pro takes the suffixed name, so every board but the
+# x4pro is checked the same way. The names come out of FirmwareBoardTag.h for
+# the same reason the legacy one does: a board whose tag says one thing while
+# the release publishes another is a device that updates to nothing, and the
+# header is the side that is right.
+for flag in STICKY PAPERMONO; do
+  board_name="$(grep -A1 "FREEINK_DEVICE_$flag\$" "$TAGH" | grep -oE 'CROSSPOINT_BOARD_NAME "[^"]+"' | sed 's/.*"\(.*\)"/\1/')"
+  if [ -z "$board_name" ]; then
+    bad "cannot find the $flag board name in FirmwareBoardTag.h"
+  elif grep -qE "dist/firmware-$board_name\.bin( |\"|$)" "$WF"; then
+    ok
+  else
+    bad "the release does not publish 'firmware-$board_name.bin', so that board's Check for updates finds nothing"
+  fi
+done
 
 # -- 3. every documented flash command names a file the release actually makes -
 #
@@ -1087,7 +1100,7 @@ fi
 # whether or not the artefacts are named in between.
 checks=$((checks + 1))
 runs=$(grep -c "run: pio run -e gh_release" "$WF")
-if [ "$runs" -eq 1 ] && grep -q "pio run -e gh_release_x4pro -e gh_release_sticky" "$WF"; then
+if [ "$runs" -eq 1 ] && grep -q "pio run -e gh_release_x4pro -e gh_release_sticky -e papermono-gh_release" "$WF"; then
   ok
 else
   failed=$((failed + 1))

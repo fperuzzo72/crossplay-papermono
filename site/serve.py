@@ -42,6 +42,7 @@ PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8899
 FIRMWARE_NAMES = {
     "x4pro": "crossplay-{tag}-x4pro-full.bin",
     "sticky": "crossplay-{tag}-sticky-full.bin",
+    "papermono": "crossplay-{tag}-papermono-full.bin",
 }
 TAG_RE = re.compile(r"^v\d{1,3}\.\d{1,3}\.\d{1,3}$")
 RELEASES = "https://github.com/ma-r-s/crossplay/releases/download"
