@@ -110,16 +110,17 @@ short version of one of them:
 
 ## Install it
 
-> **The X4 Pro is not the X4.** CrossPlay is for the Xteink **X4 Pro** and the
-> Seeed reTerminal Sticky, both ESP32-S3. The plain **X4** and the **X3** are
-> ESP32-C3, and writing an S3 image to one of those used to brick it. Install
+> **The X4 Pro is not the X4.** CrossPlay is for the Xteink **X4 Pro**, the
+> Seeed reTerminal Sticky and the M5Stack Paper Mono, all three ESP32-S3. The
+> plain **X4** and the **X3** are ESP32-C3, and writing an S3 image to one of
+> those used to brick it. Install
 > [CrossPoint](https://crosspointreader.com/) on those instead: it is excellent,
 > and it is what this is built on.
 >
 > **You do not have to work out which you have.** The browser installer below
 > reads the chip off the device before it writes anything, and stops with
-> "Nothing was written" if it is a C3. Between the two S3 devices every image
-> carries its board name and both updaters refuse an image built for the other
+> "Nothing was written" if it is a C3. Between the S3 devices every image
+> carries its board name and every updater refuses an image built for another
 > board.
 
 Open [**crossplay.ma-r-s.com/#get**](https://crossplay.ma-r-s.com/#get) in
@@ -148,7 +149,10 @@ Confirm exists only on the Sticky, which
 [docs/buttons.md](docs/buttons.md) explains.
 
 Every release is flashed to a real X4 Pro and a real Sticky before it ships.
-That is still a small field record, so if you install it, please
+The Paper Mono is newer here and has no such record: the board's support came
+from upstream CrossPoint, this fork now builds and publishes for it, and it has
+been run on one device rather than on every release. That is still a small
+field record, so if you install it, please
 [say what happened](https://github.com/ma-r-s/crossplay/issues), either way.
 
 ## What it does over the network

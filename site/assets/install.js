@@ -34,11 +34,12 @@
   "use strict";
 
 
-  // Both boards are ESP32-S3. The check is not X4-Pro-vs-Sticky (nothing on
-  // the wire tells those apart); it is "this is not one of the ESP32-C3
-  // Xteinks", which is a real mistake someone will make, and one that used to
-  // cost them a bricked device. CrossPoint upstream is the right answer there
-  // and the error says so.
+  // All three boards are ESP32-S3. The check does not tell them apart (nothing
+  // on the wire does); it is "this is not one of the ESP32-C3 Xteinks", which
+  // is a real mistake someone will make, and one that used to cost them a
+  // bricked device. CrossPoint upstream is the right answer there and the
+  // error says so. Picking the wrong one of the three costs a retry instead:
+  // every image carries its board name and the firmware refuses a foreign one.
   var EXPECTED_CHIP = "ESP32-S3";
 
   var DEVICES = {
@@ -52,6 +53,17 @@
     sticky: {
       name: "Seeed reTerminal Sticky",
       restart: "Unplug the USB cable and plug it back in.",
+    },
+    papermono: {
+      name: "M5Stack Paper Mono",
+      // This board's reset runs through its M5PM1 PMIC rather than a line the
+      // USB side can pull, so nothing here can restart it: esptool's own reset
+      // does not either. Observed on the first install, where the firmware was
+      // running the whole time and the screen only came back after a restart
+      // by hand.
+      restart:
+        "Unplug the USB cable and plug it back in, then press the power " +
+        "button. This board cannot be restarted from the computer.",
     },
   };
 

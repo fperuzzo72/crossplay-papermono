@@ -505,6 +505,7 @@
           <legend>Which device</legend>
           <label><input type="radio" name="install-device" value="x4pro" checked> Xteink X4 Pro</label>
           <label><input type="radio" name="install-device" value="sticky"> Seeed reTerminal Sticky</label>
+          <label><input type="radio" name="install-device" value="papermono"> M5Stack Paper Mono</label>
         </fieldset>
         <button class="btn primary" type="button" id="installButton">Install on Xteink X4 Pro</button>
         <div class="installer-bar" id="installBar" hidden><span id="installBarFill"></span></div>
@@ -520,7 +521,7 @@
       </div>
 
       <ol class="steps">
-        <li><strong>These two devices only.</strong> The <strong>Xteink X4 Pro</strong> and the <strong>Seeed reTerminal Sticky</strong>. For every other supported device, <a href="https://crosspointreader.com/">CrossPoint</a> upstream is the right answer and is excellent.</li>
+        <li><strong>These three devices only.</strong> The <strong>Xteink X4 Pro</strong>, the <strong>Seeed reTerminal Sticky</strong> and the <strong>M5Stack Paper Mono</strong>. For every other supported device, <a href="https://crosspointreader.com/">CrossPoint</a> upstream is the right answer and is excellent.</li>
         <li><strong>After this, no more cables.</strong> <strong>Settings &rarr; Check for updates</strong> does the rest over Wi-Fi.</li>
         <li><strong>You can go back.</strong> Flashing stock CrossPoint over the top returns the device exactly to where it was.</li>
       </ol>
@@ -528,11 +529,11 @@
       <details class="by-hand">
         <summary>Or install it by hand</summary>
         <ol class="steps">
-          <li><strong>Download your device's full image</strong> from the <a href="https://github.com/ma-r-s/crossplay/releases">releases page</a>: <code>crossplay-&lt;version&gt;-x4pro-full.bin</code> or <code>crossplay-&lt;version&gt;-sticky-full.bin</code>. Each is the whole firmware, bootloader and partition table included, so you do not need to have installed CrossPoint first. The firmware refuses an image built for the other board, so the worst a mixed-up download costs is a retry.</li>
+          <li><strong>Download your device's full image</strong> from the <a href="https://github.com/ma-r-s/crossplay/releases">releases page</a>: <code>crossplay-&lt;version&gt;-x4pro-full.bin</code>, <code>crossplay-&lt;version&gt;-sticky-full.bin</code> or <code>crossplay-&lt;version&gt;-papermono-full.bin</code>. Each is the whole firmware, bootloader and partition table included, so you do not need to have installed CrossPoint first. The firmware refuses an image built for the other board, so the worst a mixed-up download costs is a retry.</li>
           <li><strong>Flash it over USB.</strong> You need <a href="https://github.com/espressif/esptool">esptool</a>, which is one <code>pip install esptool</code> on Windows, macOS or Linux alike. With the device plugged in (shown for the X4 Pro; swap in the sticky filename on a Sticky):
             <br><code>esptool.py --chip esp32s3 --baud 921600 write_flash 0x0 crossplay-&lt;version&gt;-x4pro-full.bin</code>
           </li>
-          <li><strong>Updating an install you already have</strong> uses the app-only file instead -- <code>firmware.bin</code> for the X4 Pro, <code>firmware-sticky.bin</code> for the Sticky -- over Wi-Fi or from the SD card. The <code>-full.bin</code> is for USB only: handing it to the updater writes a bootloader into a slot meant for the application.</li>
+          <li><strong>Updating an install you already have</strong> uses the app-only file instead -- <code>firmware.bin</code> for the X4 Pro, <code>firmware-sticky.bin</code> for the Sticky, <code>firmware-papermono.bin</code> for the Paper Mono -- over Wi-Fi or from the SD card. The <code>-full.bin</code> is for USB only: handing it to the updater writes a bootloader into a slot meant for the application.</li>
         </ol>
       </details>
 

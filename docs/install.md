@@ -4,23 +4,29 @@ The README covers the one-click browser install, which is what almost
 everybody wants. This file is the rest: installing by hand, updating a device
 you already flashed, and reflashing with no cable at all.
 
-Everything here is for the **Xteink X4 Pro** and the **Seeed reTerminal
-Sticky**, and only those. Both are ESP32-S3. The plain X4 and the X3 are
-ESP32-C3, these binaries are not for them, and flashing one there is a
-cross-chip flash. Install [CrossPoint](https://crosspointreader.com/) on those
-instead: it is excellent, and it is what this is built on.
+Everything here is for the **Xteink X4 Pro**, the **Seeed reTerminal Sticky**
+and the **M5Stack Paper Mono**, and only those. All three are ESP32-S3. The
+plain X4 and the X3 are ESP32-C3, these binaries are not for them, and flashing
+one there is a cross-chip flash. Install
+[CrossPoint](https://crosspointreader.com/) on those instead: it is excellent,
+and it is what this is built on.
 
-Between the two S3 devices the firmware protects you. Every image carries its
-board name and both updaters refuse an image built for the other board.
+Between the S3 devices the firmware protects you. Every image carries its board
+name and every updater refuses an image built for another board.
 
-You do not need to have installed CrossPoint first.
+You do not need to have installed CrossPoint first. On the Paper Mono that is
+worth saying twice: a stock unit ships M5's own partition table and one already
+running CrossPoint carries CrossPoint's, and neither is this firmware's. The
+USB install below writes the table, so it is the only way in for that board
+either way.
 
 ## By hand, over USB
 
 1. Download your device's full image from the
    [releases page](https://github.com/ma-r-s/crossplay/releases):
    `crossplay-<version>-x4pro-full.bin` for the X4 Pro,
-   `crossplay-<version>-sticky-full.bin` for the Sticky. Each is the whole
+   `crossplay-<version>-sticky-full.bin` for the Sticky,
+   `crossplay-<version>-papermono-full.bin` for the Paper Mono. Each is the whole
    firmware: second-stage bootloader at `0x0`, partition table at `0x8000`,
    application at `0x10000`, in one file.
 2. Plug the device into a computer over USB.
@@ -36,16 +42,30 @@ You do not need to have installed CrossPoint first.
    esptool.py --chip esp32s3 --baud 921600 write_flash 0x0 crossplay-<version>-sticky-full.bin
    ```
 
+   ```bash
+   esptool.py --chip esp32s3 --baud 921600 write_flash 0x0 crossplay-<version>-papermono-full.bin
+   ```
+
+   The Paper Mono will not come back on its own afterwards, and that is not a
+   failed flash: its reset runs through the PY32 PMIC rather than a line
+   esptool can pull, so the cable cannot restart it. Unplug it and press the
+   power button. Have the SD card in before that first boot, or the firmware
+   stops at "SD card error" and powers the device off, taking the serial port
+   with it.
+
 If a flash goes wrong, [fix-bricked-xteink.md](fix-bricked-xteink.md) is the
 way back.
 
 ## Updating an install you already have
 
-The release also carries `firmware.bin`, which is the application on its own.
-That is the file for a device that already has a bootloader, and it needs no
-cable: **Settings > Check for updates** fetches it over Wi-Fi, or you can copy
-it onto the SD card and choose it from the same screen. The updater matches
-that exact filename, so do not rename it.
+The release also carries the application on its own, under the name that
+device's updater asks for: `firmware.bin` on the X4 Pro (the name every unit in
+the field has asked for since v1.0.0), `firmware-sticky.bin` on the Sticky,
+`firmware-papermono.bin` on the Paper Mono. That is the file for a device that
+already has a bootloader, and it needs no cable: **Settings > Check for
+updates** fetches it over Wi-Fi, or you can copy it onto the SD card and choose
+it from the same screen. The updater matches that exact filename, so do not
+rename it.
 
 `-full.bin` is for the USB install only. Do not hand it to the on-device
 updater: that would be writing a bootloader into a slot meant for the
