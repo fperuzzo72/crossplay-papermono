@@ -18,9 +18,20 @@
 
 namespace release_sources {
 
+// FORK CHANGE (papermono bring-up). Upstream asks crossplay.ma-r-s.com first
+// and ma-r-s/crossplay's releases/latest second. Both are the upstream
+// author's, and a device flashed from THIS tree that asks them gets offered
+// somebody else's firmware: the Paper Mono here reported 1.6.0-papermono
+// against upstream's v1.12.54 and showed an update it must not install.
+// Pointing at this fork's own releases is the only answer that keeps "Check
+// for updates" honest; with no release published here yet it correctly finds
+// nothing, which is the right answer and not a broken one.
+//
+// The site source is dropped rather than repointed, because there is no site
+// here to answer it. That also means this fork's update checks are not counted
+// on upstream's board, which is correct: they are not upstream's devices.
 constexpr const char* const kUrls[] = {
-    "https://crossplay.ma-r-s.com/api/latest",
-    "https://api.github.com/repos/ma-r-s/crossplay/releases/latest",
+    "https://api.github.com/repos/fperuzzo72/crossplay-papermono/releases/latest",
 };
 constexpr int kCount = static_cast<int>(sizeof(kUrls) / sizeof(kUrls[0]));
 
